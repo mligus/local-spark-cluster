@@ -13,8 +13,13 @@ RUN set -ex; \
     apt-get install -y gnupg2 wget bash python3 python3-pip python3-numpy python3-matplotlib python3-pandas; \
     mkdir -p /opt/spark; \
     mkdir /opt/spark/python; \
-    mkdir /opt/spark/work; \
+    # mkdir /opt/spark/work; \
+    mkdir -p /opt/spark/examples; \
+    mkdir -p /opt/spark/work-dir; \
+    chmod g+w /opt/spark/work-dir; \
+    touch /opt/spark/RELEASE; \
     chown -R spark:spark /opt/spark; \
+    echo "auth required pam_wheel.so use_uid" >> /etc/pam.d/su; \
     rm -rf /var/lib/apt/lists/*;
 
 # Install Apache Spark
@@ -41,8 +46,11 @@ RUN set -ex; \
 
 FROM ground AS apache-spark
 
-ENV SPARK_HOME=/opt/spark
+USER spark
+
+# All expect SPARK_HOME are taken from original entrypoint.sh
+ENV SPARK_HOME=/opt/spark \
+    JAVA_HOME=/opt/java/openjdk \
+    SPARK_CLASSPATH="/opt/spark/jars/*"
 
 WORKDIR /opt/spark
-
-USER spark

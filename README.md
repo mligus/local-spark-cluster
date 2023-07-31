@@ -30,7 +30,7 @@ To run code from this repository you will need:
 By default, each node configured to use:
 
 * 1 GB RAM
-* 1 CPU core.
+* 1 CPU core
 
 Theoretically should run okay on any machine nowadays.
 Feel free to play and update node config in `docker-compose.yml`.
@@ -98,3 +98,29 @@ Execute Spark app:
                             --executor-memory 1G \
                             /opt/spark/user-apps/pi.py
 ```
+
+Or run the same example from Spark codebase:
+
+```bash
+cd /opt/spark
+./bin/spark-submit examples/src/main/python/pi.py 10
+```
+
+Or Java or Scala application:
+
+```
+./bin/run-example SparkPi 10
+```
+
+
+## Next Steps (aka ToDo)
+
+* catch bugs and improve `Dockerfile` and Compose file
+* try running [Spark Connect](https://spark.apache.org/docs/latest/spark-connect-overview.html)
+
+
+## Useful Links
+
+* [Spark Overview](https://spark.apache.org/docs/latest/)
+* [Spark Cluster Mode Overview](https://spark.apache.org/docs/latest/cluster-overview.html)
+* [Spark Standalone Mode](https://spark.apache.org/docs/latest/spark-standalone.html)
