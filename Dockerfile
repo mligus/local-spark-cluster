@@ -13,6 +13,8 @@ RUN set -ex; \
     apt-get install -y gnupg2 wget bash python3 python3-pip python3-numpy python3-matplotlib python3-pandas; \
     mkdir -p /opt/spark; \
     mkdir /opt/spark/python; \
+    mkdir /opt/spark/work; \
+    chown -R spark:spark /opt/spark; \
     rm -rf /var/lib/apt/lists/*;
 
 # Install Apache Spark
@@ -39,34 +41,8 @@ RUN set -ex; \
 
 FROM ground AS apache-spark
 
-WORKDIR /opt/spark
-
-ENV SPARK_MASTER_PORT=7077 \
-    SPARK_MASTER_WEBUI_PORT=8080 \
-    SPARK_LOG_DIR=/opt/spark/logs \
-    SPARK_MASTER_LOG=/opt/spark/logs/spark-master.out \
-    SPARK_WORKER_LOG=/opt/spark/logs/spark-worker.out \
-    SPARK_WORKER_WEBUI_PORT=8080 \
-    SPARK_WORKER_PORT=7000 \
-    SPARK_MASTER="spark://spark-master:7077" \
-    SPARK_WORKLOAD="master"
-
-EXPOSE 8080 7077 7000
-
-RUN set -ex; \
-    mkdir -p /opt/spark/logs; \
-    mkdir -p /opt/spark/work; \
-    touch $SPARK_MASTER_LOG; \
-    touch $SPARK_WORKER_LOG; \
-    ln -sf /dev/stdout $SPARK_MASTER_LOG; \
-    ln -sf /dev/stdout $SPARK_WORKER_LOG;
-
-COPY start-spark.sh /opt
-
 ENV SPARK_HOME=/opt/spark
 
-WORKDIR /opt/spark/work
+WORKDIR /opt/spark
 
 USER spark
-
-CMD ["/bin/bash", "/opt/start-spark.sh"]
